@@ -37,7 +37,12 @@ std::function<int(int,int)> minus_fun = [](int a, int b) { return a - b; };
 std::function<int(int,int)> mult_fun = [](int a, int b) { return a * b; };
 std::function<int(int,int)> div_fun = [](int a, int b) { return a >= 0 ? a / b : a % b == 0 ? a / b : a / b - 1; };
 
-std::map<std::string, std::function<int(int, int)>> operations {{"+", sum_fun}, {"-", minus_fun}, {"*", mult_fun}, {"/", div_fun}};
+std::map<std::string, std::function<int(int, int)>> operations {
+    {"+", sum_fun}, 
+    {"-", minus_fun}, 
+    {"*", mult_fun}, 
+    {"/", div_fun}
+};
 
 std::vector<std::string> split(std::string str){
     std::istringstream ist(str);
