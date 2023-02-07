@@ -1,4 +1,4 @@
-// ID: 8165322
+// ID: 81966029
 // ========================================================================================================
 // Class 'deq' is based on cycled array approach. Class contains field 'data' --- array with contents of
 // deq, fields 'max_size' and 'cur size' with maximum size of deq and current size of deq(Maximum size
@@ -24,110 +24,114 @@
 #include <fstream>
 #include <vector>
 #include <string>
+#include <map>
 
-class deq {
+std::ifstream in;
+std::ofstream out;
+
+enum commands {PUSH_BACK, PUSH_FRONT, POP_BACK, POP_FRONT};
+std::map<std::string, commands> str_to_commands {
+    {"push_back", PUSH_BACK}, 
+    {"push_front", PUSH_FRONT}, 
+    {"pop_back", POP_BACK},
+    {"pop_front", POP_FRONT} 
+};
+
+class Deque {
     std::vector<int> data;
     int max_size;
     int cur_size;
     int head;
     int tail;
 public:
-    deq(int max_size) : data(max_size), max_size(max_size), cur_size(), head(), tail() {}
+    Deque(int max_size) : data(max_size), max_size(max_size), cur_size(), head(), tail() {}
     void push_back(int);
     void push_front(int);
     int pop_back();
     int pop_front();
 };
 
-void deq::push_back(int value){
+void Deque::push_back(int value){
     if (cur_size == max_size){
         throw "error";
-    } else {
-        data[tail] = value;
-        tail = (tail + 1) % max_size;
-        cur_size++;
     }
+    data[tail] = value;
+    tail = (tail + 1) % max_size;
+    cur_size++;
 }
 
-void deq::push_front(int value){
+void Deque::push_front(int value){
     if (cur_size == max_size){
         throw "error";
-    } else {
-        head = (head - 1 + max_size) % max_size;
-        data[head] = value;
-        cur_size++;
     }
+    head = (head - 1 + max_size) % max_size;
+    data[head] = value;
+    cur_size++;
 }
 
-int deq::pop_back(){
+int Deque::pop_back(){
     if (cur_size == 0){
         throw "error";
-    } else {
-        tail = (tail - 1 + max_size) % max_size;
-        int element_to_pop = data[tail];
-        cur_size--;
-        return element_to_pop;
     }
+    tail = (tail - 1 + max_size) % max_size;
+    int element_to_pop = data[tail];
+    cur_size--;
+    
+    return element_to_pop;
 }
 
-int deq::pop_front(){
+int Deque::pop_front(){
     if (cur_size == 0){
         throw "error";
-    } else {
-        int element_to_pop = data[head];
-        head = (head + 1) % max_size;
-        cur_size--;
-        return element_to_pop;
     }
+    int element_to_pop = data[head];
+    head = (head + 1) % max_size;
+    cur_size--;
+    
+    return element_to_pop;
 }
 
-void process_instructions(std::ifstream &in, std::ofstream &out, int number_of_instructions, deq &my_deq){
+void process_instructions(int number_of_instructions, Deque &my_deq){
     std::string instruction;
     int param;
     for (int i = 0; i < number_of_instructions; ++i){
         in >> instruction;
-        if (instruction == "push_back"){
-            in >> param;
-            try {
+        try{
+            switch (str_to_commands[instruction])
+            {
+            case PUSH_BACK:
+                in >> param;
                 my_deq.push_back(param);
-            } catch (const char* msg) {
-                out << msg << std::endl;
-            }
-        } else if (instruction == "push_front"){
-            in >> param;
-            try {
+                break;
+            case PUSH_FRONT:
+                in >> param;
                 my_deq.push_front(param);
-            } catch (const char* msg) {
-                out << msg << std::endl;
+                break;
+            case POP_BACK:
+                out << my_deq.pop_back() << std::endl; 
+                break;
+            case POP_FRONT:
+                out << my_deq.pop_front() << std::endl; 
+                break;
+            default:
+                break;
             }
-        } else if (instruction == "pop_back"){
-            try {
-                out << my_deq.pop_back() << std::endl;
-            } catch(const char* msg) {
-                out << msg << std::endl;
-            }
-        } else if (instruction == "pop_front"){
-            try {
-                out << my_deq.pop_front() << std::endl;
-            } catch (const char* msg) {
-                out << msg << std::endl;
-            }
+        } catch(const char* msg) {
+            out << msg << std::endl;
         }
     }
 }
 
 int main(){
-    std::ifstream in;
-    std::ofstream out;
     in.open("input.txt");
     out.open("output.txt");
 
     int number_of_instructions, max_size;
     in >> number_of_instructions >> max_size;
     
-    deq my_deq(max_size);
+    Deque my_deq(max_size);
 
-    process_instructions(in, out, number_of_instructions, my_deq);
+    process_instructions(number_of_instructions, my_deq);
 
     in.close();
     out.close();
