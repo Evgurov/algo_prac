@@ -1,4 +1,4 @@
-// ID: 85229290
+// ID: 85554580
 // ================================================================================
 // Function `remove(root, key)` works as follows: 
 // 1. Find parent of the node which should be deleted (`find_node_parent` function)
@@ -16,9 +16,9 @@
 // node and this will be the resulting tree.
 // --------------------------------------------------------------------------------
 // Time complexity: 
-// * `find_node_parent` ~ O(log n)
+// * `find_node_parent` ~ O(n)
 // * `find_replacing_node_parent` ~ O(log n) => `make_new_subtree` ~ O(log n)
-// * Then overall time complexity for `remove` ~ O(log n) + O(log n) ~ O(log n)
+// * Then overall time complexity for `remove` ~ O(n) + O(log n) ~ O(n)
 // Memory complexity: O(1)
 // ================================================================================
 
@@ -45,17 +45,15 @@ Node* find_node_parent(Node* root, Node* parent, int key) {
     // should continue searching in the left subtree
     if (root -> value < key) {
         return find_node_parent(root -> right, root, key);
-    } 
-    // node found, return its parent
-    if (root -> value == key) {
-        return parent;
     }
+
     // should continue searching in the right subtree
-    if (root -> value >= key) {
+    if (root -> value > key) {
         return find_node_parent(root -> left, root, key);
     }
 
-    return nullptr;
+    // node found, return its parent
+    return parent;
 }
 
 Node* find_replacing_node_parent(Node* node_to_replace) {

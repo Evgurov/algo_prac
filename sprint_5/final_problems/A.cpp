@@ -1,4 +1,4 @@
-// ID: 85285717
+// ID: 85467569
 // ==============================================================================
 // `heap_sort` function creates a heap for sorting. It adds all elements of an
 // array to heap and then on every step gets the smallest one, forming new sorted
@@ -46,12 +46,20 @@ bool Participant::operator < (const Participant& second) const {
     if (penalty < second.penalty)
         return false;
 
-    if (login > second.login)
-        return true;
-    if (login < second.login)
-        return false;
+    return login > second.login;
+}
 
-    return false;
+template <class T>
+int find_min_idx(std::vector<T>& arr, int idx_1, int idx_2, int idx_3) {
+    int min_idx = idx_1;
+    if (arr[idx_2] < arr[min_idx]) {
+        min_idx = idx_2;
+    }
+    if (arr[idx_3] < arr[min_idx]) {
+        min_idx  = idx_3;
+    }
+
+    return min_idx;
 }
 
 template <class T>
@@ -70,9 +78,9 @@ void Heap<T>::add(const T& elem) {
     heap.push_back(elem);
     heap_size++;
     int idx = heap_size;
-    while (idx > 1 && heap[idx] < heap[idx/2]) {
-        std::swap(heap[idx], heap[idx/2]);
-        idx = idx/2;
+    while (idx > 1 && heap[idx] < heap[idx / 2]) {
+        std::swap(heap[idx], heap[idx / 2]);
+        idx = idx / 2;
     }
 }
 
@@ -94,13 +102,8 @@ void Heap<T>::remove(const T& elem) {
         while(idx <= heap_size) {
             if (idx * 2 <= heap_size) {
                 if (idx * 2 + 1 <= heap_size) {
-                    int min_idx;
-                    if (heap[idx * 2] < heap[idx * 2 + 1]) {
-                        min_idx = idx * 2;
-                    } else {
-                        min_idx = idx * 2 + 1;
-                    }
-                    if (heap[min_idx] < heap[idx]) {
+                    int min_idx = find_min_idx(heap, idx, idx * 2, idx * 2 + 1);
+                    if (min_idx != idx) {
                         std::swap(heap[idx], heap[min_idx]);
                         idx = min_idx;
                     } else {
