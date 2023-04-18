@@ -28,18 +28,6 @@ auto get_adjacency_list(std::istream& in, int num_edges) {
 }
 
 template <class VertexType>
-auto TopologySort(std::unordered_map<VertexType, std::set<VertexType>>& adjacency_list) {
-    std::stack<VertexType> reversed_sorted;
-    std::unordered_map<VertexType, Color> vertex_colors;
-    for (const auto& vertex : adjacency_list) {
-        DFS(adjacency_list, reversed_sorted, vertex_colors, vertex.first);
-    }
-
-    return reversed_sorted;
-}
-
-
-template <class VertexType>
 void DFS(std::unordered_map<VertexType, std::set<VertexType>>& adjacency_list,
          std::stack<VertexType>& reversed_sorted,
          std::unordered_map<VertexType, Color>& vertex_colors,
@@ -67,6 +55,17 @@ void DFS(std::unordered_map<VertexType, std::set<VertexType>>& adjacency_list,
             }
         }
     }
+}
+
+template <class VertexType>
+auto TopologySort(std::unordered_map<VertexType, std::set<VertexType>>& adjacency_list) {
+    std::stack<VertexType> reversed_sorted;
+    std::unordered_map<VertexType, Color> vertex_colors;
+    for (const auto& vertex : adjacency_list) {
+        DFS(adjacency_list, reversed_sorted, vertex_colors, vertex.first);
+    }
+
+    return reversed_sorted;
 }
 
 int main() {
