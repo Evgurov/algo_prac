@@ -34,6 +34,7 @@ auto dijkstra(const std::vector<std::set<std::pair<int, int>>>& adjacency_list, 
     dist[start - 1] = 0;
     while (!vertices_to_process.empty()) {
         int cur_vertex = vertices_to_process.top().second;
+        vertices_to_process.pop();
         if (visited[cur_vertex - 1] == false) {
             for (auto adj_vertex : adjacency_list[cur_vertex - 1]) {
                 if (visited[adj_vertex.first - 1] == false) {
@@ -43,7 +44,6 @@ auto dijkstra(const std::vector<std::set<std::pair<int, int>>>& adjacency_list, 
             }
             visited[cur_vertex - 1] = true;
         }
-        vertices_to_process.pop();
     }
 
     return dist;
