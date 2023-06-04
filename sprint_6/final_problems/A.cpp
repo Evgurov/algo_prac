@@ -1,4 +1,4 @@
-// ID: 86220517
+// ID: 86424902
 // =============================================================================
 // Implemented algorithm for maximal spanning tree search is Prim's algorithm,
 // based on priority queue. At the beginning there is starting vertex in a 
@@ -19,8 +19,6 @@
 #include <vector>
 #include <queue>
 
-std::ifstream in;
-std::ofstream out;
 
 void fill_adjacency_list(
     std::istream& in, 
@@ -40,8 +38,9 @@ void fill_adjacency_list(
     int u, v, weight;
     for (int i = 0; i < num_edges; ++i) {
         in >> u >> v >> weight;
-        adjacency_list[u - 1].push_back(std::make_pair(v, weight));
-        adjacency_list[v - 1].push_back(std::make_pair(u, weight));
+        u = u - 1; v = v - 1;
+        adjacency_list[u].push_back(std::make_pair(v, weight));
+        adjacency_list[v].push_back(std::make_pair(u, weight));
     }
 }
 
@@ -78,20 +77,20 @@ int max_spanning_tree(
 
     int tree_weight = 0;
 
-    vertices_to_process.push(std::make_pair(0, start));
+    vertices_to_process.push(std::make_pair(0, start - 1));
     while (!vertices_to_process.empty()) {
         int new_vertex = vertices_to_process.top().second;
         int new_weight = vertices_to_process.top().first;
         vertices_to_process.pop();
 
-        if (!processed[new_vertex - 1]) {
+        if (!processed[new_vertex]) {
             tree_weight += new_weight;
-            for (const auto& adj_vertex : adjacency_list[new_vertex - 1]) {
-                if (processed[adj_vertex.first - 1] == false) {
+            for (const auto& adj_vertex : adjacency_list[new_vertex]) {
+                if (processed[adj_vertex.first] == false) {
                     vertices_to_process.push(std::make_pair(adj_vertex.second, adj_vertex.first));
                 }
             }
-            processed[new_vertex - 1] = true;
+            processed[new_vertex] = true;
         }
     }
 
@@ -103,6 +102,9 @@ int max_spanning_tree(
 }
 
 int main() {
+    std::ifstream in;
+    std::ofstream out;
+
     in.open("input.txt");
     out.open("output.txt");
 
